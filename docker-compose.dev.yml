@@ -1,0 +1,40 @@
+# docker-compose.dev.yml
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# This file:
+# - Adds hot-reload volume mounts for app services (added in Phase 3+)
+# - Exposes extra debug ports
+# - Sets LOG_LEVEL=debug globally
+
+services:
+  kafka:
+    environment:
+      KAFKA_LOG4J_ROOT_LOGLEVEL: WARN      # Reduce Kafka noise in dev
+
+  # When app services are added in Phase 3+, add their dev overrides here:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile
+      target: builder
+    volumes:
+      - ./apps/api-gateway/src:/app/apps/api-gateway/src:ro
+      - ./shared:/app/shared:ro
+    command: pnpm --filter @nexus/api-gateway dev
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+
+  # hash-worker:
+  #   volumes:
+  #     - ./services/hash-worker/src:/app/src:ro
+  #   environment:
+  #     LOG_LEVEL: debug
+
+  # ── AI Worker (Phase 4) ─────────────────────────────────────────────────────
+  ai-worker:
+    volumes:
+      - ./services/ai-worker:/app:ro
+    environment:
+      LOG_LEVEL: debug
+      AI_BATCH_WINDOW_SECONDS: "1.0"   # faster batching during dev iteration
