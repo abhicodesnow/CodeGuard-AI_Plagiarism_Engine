@@ -1,4 +1,4 @@
-# Nexus
+# CodeGuard
 
 Distributed plagiarism detection system for C++ code submissions.
 
@@ -6,7 +6,7 @@ Distributed plagiarism detection system for C++ code submissions.
 
 ## How it works
 
-Nexus is a distributed plagiarism detection system that receives ZIP archives of C++ files, parses them into AST token sequences to compute MinHash fingerprints, pre-filters similarities with LSH, and verifies exact Jaccard scores. The most suspicious code pairs are then routed to an LLM for forensic obfuscation analysis before the final report is surfaced to the frontend.
+CodeGuard is a distributed plagiarism detection system that receives ZIP archives of C++ files, parses them into AST token sequences to compute MinHash fingerprints, pre-filters similarities with LSH, and verifies exact Jaccard scores. The most suspicious code pairs are then routed to an LLM for forensic obfuscation analysis before the final report is surfaced to the frontend.
 
 ```mermaid
 graph LR
@@ -75,8 +75,8 @@ pnpm dev
 |---|---|---|---|
 | KAFKA_BROKER | Yes | kafka:9092 | Kafka broker address |
 | MINIO_ENDPOINT | Yes | minio:9000 | MinIO server address |
-| MINIO_ROOT_USER | Yes | nexus | MinIO access key |
-| MINIO_ROOT_PASSWORD | Yes | nexus-secret-change-in-prod | MinIO secret key |
+| MINIO_ROOT_USER | Yes | CodeGuard | MinIO access key |
+| MINIO_ROOT_PASSWORD | Yes | CodeGuard-secret-change-in-prod | MinIO secret key |
 | REDIS_URL | Yes | redis://localhost:6379 | Redis connection string |
 | OPENAI_API_KEY | Yes | None | OpenAI API key for AI analysis |
 | LLM_MAX_CONCURRENT | No | 5 | Max concurrent LLM requests |
@@ -88,7 +88,7 @@ pnpm dev
 ## Project structure
 
 ```text
-nexus/
+CodeGuard/
 ├── apps/web/              # Next.js frontend
 ├── services/
 │   ├── api-gateway/       # GraphQL API, Kafka producer, MinIO upload
@@ -103,7 +103,7 @@ nexus/
 ```bash
 # hash-worker — process a ZIP directly
 cd services/hash-worker
-python main.py --zip nexus-submissions/test.zip --job-id debug-001
+python main.py --zip CodeGuard-submissions/test.zip --job-id debug-001
 
 # ai-worker — process a suspicious pair directly
 cd services/ai-worker

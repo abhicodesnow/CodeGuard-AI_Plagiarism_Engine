@@ -1,6 +1,6 @@
 # docker-compose.yml
 #
-# Nexus Infrastructure — Phase 0
+# CodeGuard Infrastructure — Phase 0
 # Only infra services. App services (api-gateway, hash-worker, ai-worker, frontend)
 # are added in later phases.
 
@@ -14,11 +14,11 @@ x-infra-env: &infra-env
   REDIS_PORT: "6379"
   MINIO_ENDPOINT: minio
   MINIO_PORT: "9000"
-  MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-nexus}
-  MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-nexus-secret-change-in-prod}
+  MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-codeguard}
+  MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-codeguard-secret-change-in-prod}
   MINIO_USE_SSL: "false"
-  MINIO_BUCKET_SUBMISSIONS: ${MINIO_BUCKET_SUBMISSIONS:-nexus-submissions}
-  MINIO_BUCKET_REPORTS: ${MINIO_BUCKET_REPORTS:-nexus-reports}
+  MINIO_BUCKET_SUBMISSIONS: ${MINIO_BUCKET_SUBMISSIONS:-codeguard-submissions}
+  MINIO_BUCKET_REPORTS: ${MINIO_BUCKET_REPORTS:-codeguard-reports}
 
 services:
 
@@ -27,9 +27,9 @@ services:
   # Zookeeper for broader compatibility with team's existing tooling).
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
-    container_name: nexus-zookeeper
+    container_name: codeguard-zookeeper
     hostname: zookeeper
-    networks: [nexus-net]
+    networks: [codeguard-net]
     ports:
       - "2181:2181"
     environment:
@@ -52,9 +52,9 @@ services:
   # ── Kafka ───────────────────────────────────────────────────────────────────
   kafka:
     image: confluentinc/cp-kafka:7.6.1
-    container_name: nexus-kafka
+    container_name: codeguard-kafka
     hostname: kafka
-    networks: [nexus-net]
+    networks: [codeguard-net]
     ports:
       - "9092:9092"      # Internal broker (used by all containers)
       - "9093:9093"      # External broker (used by host-machine tooling like kafkacat)
@@ -117,8 +117,8 @@ services:
   # check `docker compose logs kafka-init`.
   kafka-init:
     image: confluentinc/cp-kafka:7.6.1
-    container_name: nexus-kafka-init
-    networks: [nexus-net]
+    container_name: codeguard-kafka-init
+    networks: [codeguard-net]
     depends_on:
       kafka:
         condition: service_healthy
@@ -132,9 +132,9 @@ services:
   # ── Redis ───────────────────────────────────────────────────────────────────
   redis:
     image: redis:7.2-alpine
-    container_name: nexus-redis
+    container_name: codeguard-redis
     hostname: redis
-    networks: [nexus-net]
+    networks: [codeguard-net]
     ports:
       - "6379:6379"
     command: redis-server /usr/local/etc/redis/redis.conf
@@ -152,15 +152,15 @@ services:
   # ── MinIO ───────────────────────────────────────────────────────────────────
   minio:
     image: minio/minio:RELEASE.2024-06-04T19-20-08Z
-    container_name: nexus-minio
+    container_name: codeguard-minio
     hostname: minio
-    networks: [nexus-net]
+    networks: [codeguard-net]
     ports:
       - "9000:9000"      # S3-compatible API
       - "9001:9001"      # MinIO Web Console (browse at http://localhost:9001)
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-nexus}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-nexus-secret-change-in-prod}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-codeguard}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-codeguard-secret-change-in-prod}
       # Optional: telemetry off for air-gapped environments
       MINIO_UPDATE: "off"
     command: server /data --console-address ":9001"
@@ -177,8 +177,8 @@ services:
   # ── MinIO Init ──────────────────────────────────────────────────────────────
   minio-init:
     image: minio/mc:latest
-    container_name: nexus-minio-init
-    networks: [nexus-net]
+    container_name: codeguard-minio-init
+    networks: [codeguard-net]
     depends_on:
       minio:
         condition: service_healthy
@@ -187,8 +187,8 @@ services:
     entrypoint: sh /init-buckets.sh
     environment:
       MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-nexus}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-nexus-secret-change-in-prod}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-codeguard}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-codeguard-secret-change-in-prod}
     restart: "no"
 
   # ── Redpanda Console (Kafka UI) ─────────────────────────────────────────────
@@ -197,9 +197,9 @@ services:
   # Only starts with: docker compose --profile dev up
   kafka-ui:
     image: redpandadata/console:v2.6.0
-    container_name: nexus-kafka-ui
+    container_name: codeguard-kafka-ui
     hostname: kafka-ui
-    networks: [nexus-net]
+    networks: [codeguard-net]
     ports:
       - "8080:8080"
     depends_on:
@@ -218,16 +218,16 @@ services:
   # Only starts with: docker compose --profile dev up
   redis-ui:
     image: rediscommander/redis-commander:latest
-    container_name: nexus-redis-ui
+    container_name: codeguard-redis-ui
     hostname: redis-ui
-    networks: [nexus-net]
+    networks: [codeguard-net]
     ports:
       - "8081:8081"
     depends_on:
       redis:
         condition: service_healthy
     environment:
-      REDIS_HOSTS: "nexus-redis:redis:6379"
+      REDIS_HOSTS: "codeguard-redis:redis:6379"
     restart: unless-stopped
     profiles: [dev]
 
@@ -237,9 +237,9 @@ services:
       context: .
       dockerfile: apps/api-gateway/Dockerfile
       target: runtime
-    container_name: nexus-api-gateway
+    container_name: codeguard-api-gateway
     hostname: api-gateway
-    networks: [nexus-net]
+    networks: [codeguard-net]
     ports:
       - "4000:4000"
     depends_on:
@@ -272,9 +272,9 @@ services:
   #     context: services/hash-worker
   #     dockerfile: Dockerfile
   #     target: runtime
-  #   container_name: nexus-hash-worker
+  #   container_name: codeguard-hash-worker
   #   hostname: hash-worker
-  #   networks: [nexus-net]
+  #   networks: [codeguard-net]
   #   depends_on:
   #     kafka:
   #       condition: service_healthy
@@ -297,9 +297,9 @@ services:
       context: services/ai-worker
       dockerfile: Dockerfile
       target: runtime
-    container_name: nexus-ai-worker
+    container_name: codeguard-ai-worker
     hostname: ai-worker
-    networks: [nexus-net]
+    networks: [codeguard-net]
     depends_on:
       kafka:
         condition: service_healthy
@@ -323,7 +323,7 @@ services:
 # Networks
 # ─────────────────────────────────────────────────────────────────────────────
 networks:
-  nexus-net:
+  codeguard-net:
     driver: bridge
     # Explicit subnet avoids conflicts with VPN ranges
     ipam:

@@ -2,3 +2,6 @@ packages:
   - 'apps/*'
   - 'services/api-gateway'
   - 'shared/*'
+allowBuilds:
+  '@apollo/protobufjs': true
+  esbuild: true
