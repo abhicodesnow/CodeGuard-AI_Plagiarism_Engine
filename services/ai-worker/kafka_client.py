@@ -38,7 +38,7 @@ from typing import Any, Awaitable, Callable
 
 from confluent_kafka import Consumer, KafkaError, Message, Producer
 
-logger = logging.getLogger("nexus.ai-kafka")
+logger = logging.getLogger("codeguard.ai-kafka")
 
 # ── Config ────────────────────────────────────────────────────────────────────
 _DLQ_TOPIC       = "dead-letter"

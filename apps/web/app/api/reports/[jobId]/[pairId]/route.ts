@@ -14,7 +14,7 @@ export async function GET(
   { params }: { params: { jobId: string; pairId: string } }
 ) {
   const { jobId, pairId } = params;
-  const bucketName = process.env.MINIO_BUCKET || 'nexus-reports';
+  const bucketName = process.env.MINIO_BUCKET || 'codeguard-reports';
   const objectName = `reports/${jobId}/${pairId}.json`;
 
   try {

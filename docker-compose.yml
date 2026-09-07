@@ -136,7 +136,7 @@ services:
     hostname: redis
     networks: [codeguard-net]
     ports:
-      - "6379:6379"
+      - "6380:6379"
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - redis-data:/data

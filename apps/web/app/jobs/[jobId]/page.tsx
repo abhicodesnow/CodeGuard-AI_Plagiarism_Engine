@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import ForensicGraph from '../../../components/ForensicGraph';
 import ReportModal from '../../../components/ReportModal';
-import { SuspiciousPair } from '@nexus/types';
+import { SuspiciousPair } from '@codeguard/types';
 
 const GET_SUSPICIOUS_PAIRS = gql`
   query GetSuspiciousPairs($jobId: String!) {

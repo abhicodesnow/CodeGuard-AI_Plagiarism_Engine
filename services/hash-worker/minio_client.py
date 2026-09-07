@@ -36,7 +36,7 @@ class ZipEntry:
 
 
 class MinIOClient:
-    """Wrapper around the MinIO Python SDK for Nexus operations."""
+    """Wrapper around the MinIO Python SDK for Codeguard operations."""
 
     def __init__(
         self,

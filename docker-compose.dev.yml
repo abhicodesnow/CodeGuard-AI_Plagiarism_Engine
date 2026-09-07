@@ -20,7 +20,7 @@ services:
     volumes:
       - ./apps/api-gateway/src:/app/apps/api-gateway/src:ro
       - ./shared:/app/shared:ro
-    command: pnpm --filter @nexus/api-gateway dev
+    command: pnpm --filter @codeguard/api-gateway dev
     environment:
       NODE_ENV: development
       LOG_LEVEL: debug

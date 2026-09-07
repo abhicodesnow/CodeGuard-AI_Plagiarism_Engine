@@ -1,5 +1,5 @@
 {
-  "name": "@nexus/api-gateway",
+  "name": "@codeguard/api-gateway",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@nexus/types": "workspace:*",
+    "@codeguard/types": "workspace:*",
     "express": "^4.21.0"
   },
   "devDependencies": {

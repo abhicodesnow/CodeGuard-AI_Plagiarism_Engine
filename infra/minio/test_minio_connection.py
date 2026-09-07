@@ -8,15 +8,15 @@ import io
 
 client = Minio(
     "localhost:9000",
-    access_key="nexus",
-    secret_key="nexus-secret-change-in-prod",
+    access_key="codeguard",
+    secret_key="codeguard-secret-change-in-prod",
     secure=False,
 )
 
 # Upload a test object
-test_data = b"Hello from Nexus test"
+test_data = b"Hello from Codeguard test"
 client.put_object(
-    bucket_name="nexus-submissions",
+    bucket_name="codeguard-submissions",
     object_name="test/hello.txt",
     data=io.BytesIO(test_data),
     length=len(test_data),
@@ -25,11 +25,11 @@ client.put_object(
 print("✓ Upload succeeded")
 
 # Download and verify
-response = client.get_object("nexus-submissions", "test/hello.txt")
+response = client.get_object("codeguard-submissions", "test/hello.txt")
 assert response.read() == test_data
 print("✓ Download and verify succeeded")
 
 # Clean up
-client.remove_object("nexus-submissions", "test/hello.txt")
+client.remove_object("codeguard-submissions", "test/hello.txt")
 print("✓ Cleanup done")
 print("\nMinIO is fully operational for Dev B.")

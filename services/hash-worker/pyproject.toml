@@ -1,7 +1,7 @@
 [project]
-name = "nexus-hash-worker"
+name = "codeguard-hash-worker"
 version = "0.1.0"
-description = "Nexus hash worker: C++ AST parsing, Winnowing fingerprinting, pairwise similarity"
+description = "Codeguard hash worker: C++ AST parsing, Winnowing fingerprinting, pairwise similarity"
 requires-python = ">=3.11"
 
 dependencies = [

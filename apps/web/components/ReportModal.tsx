@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { SuspiciousPair, ForensicReport } from '@nexus/types';
+import { SuspiciousPair, ForensicReport } from '@codeguard/types';
 import VerdictBadge from './VerdictBadge';
 
 interface ReportModalProps {

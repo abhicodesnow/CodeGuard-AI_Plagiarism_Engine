@@ -8,7 +8,7 @@ import openai
 from openai import AsyncOpenAI
 from rate_limiter import TokenBucket
 
-logger = logging.getLogger("nexus.forensic-analyst")
+logger = logging.getLogger("codeguard.forensic-analyst")
 
 @dataclass
 class PairInput:

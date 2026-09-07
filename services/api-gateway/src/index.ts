@@ -1,5 +1,5 @@
 import express from 'express';
-import type { JobStatus } from '@nexus/types';
+import type { JobStatus } from '@codeguard/types';
 
 const app = express();
 const PORT = process.env['PORT'] ?? 4000;

@@ -26,14 +26,14 @@ from state import JobStateManager, JobStatus
 if TYPE_CHECKING:
     from kafka_client import HashWorkerKafkaClient
 
-logger = logging.getLogger("nexus.handler")
+logger = logging.getLogger("codeguard.handler")
 
 
 @dataclass
 class WorkerConfig:
     """Pipeline configuration — loaded from environment variables."""
 
-    bucket: str = "nexus-submissions"
+    bucket: str = "codeguard-submissions"
     threshold: float = 0.6
     lsh_threshold: float = 0.5
     lsh_num_perm: int = 128
@@ -43,7 +43,7 @@ class WorkerConfig:
     def from_env(cls) -> WorkerConfig:
         """Build config from environment variables with sensible defaults."""
         return cls(
-            bucket=os.getenv("MINIO_BUCKET_SUBMISSIONS", "nexus-submissions"),
+            bucket=os.getenv("MINIO_BUCKET_SUBMISSIONS", "codeguard-submissions"),
             threshold=float(os.getenv("SUSPICIOUS_PAIR_THRESHOLD", "0.6")),
             lsh_threshold=float(os.getenv("LSH_THRESHOLD", "0.5")),
             lsh_num_perm=int(os.getenv("LSH_NUM_PERM", "128")),

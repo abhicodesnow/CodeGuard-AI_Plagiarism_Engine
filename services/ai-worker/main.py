@@ -3,7 +3,7 @@ import asyncio
 import logging
 from dotenv import load_dotenv
 
-logger = logging.getLogger("nexus.ai-worker")
+logger = logging.getLogger("codeguard.ai-worker")
 
 async def run_kafka_worker() -> None:
     # 1. Load .env

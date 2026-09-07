@@ -1,5 +1,5 @@
 /**
- * Idempotent Kafka producer for Nexus API Gateway.
+ * Idempotent Kafka producer for Codeguard API Gateway.
  *
  * idempotent: true → exactly-once delivery per session.
  * Without this, a network retry could produce duplicate JOB_CREATED events,
@@ -17,7 +17,7 @@ import {
 // ── Kafka client singleton ──────────────────────────────────────────────────
 
 const kafka = new Kafka({
-  clientId: 'nexus-api-gateway',
+  clientId: 'codeguard-api-gateway',
   brokers: (process.env.KAFKA_BROKERS ?? 'localhost:9093').split(','),
   logLevel: logLevel.WARN,
   retry: {
@@ -95,7 +95,7 @@ export async function publishJobCreated(
           'event-type':     'JOB_CREATED',
           'schema-version': '1',
           'content-type':   'application/json',
-          'produced-by':    'nexus-api-gateway',
+          'produced-by':    'codeguard-api-gateway',
           'produced-at':    new Date().toISOString(),
         },
       },

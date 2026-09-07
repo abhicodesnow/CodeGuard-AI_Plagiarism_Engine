@@ -93,7 +93,7 @@ importers:
       '@apollo/client':
         specifier: ^4.2.2
         version: 4.2.2(graphql-ws@5.16.2(graphql@16.14.0))(graphql@16.14.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rxjs@7.8.2)
-      '@nexus/types':
+      '@codeguard/types':
         specifier: workspace:*
         version: link:../../shared/types
       graphql:
@@ -160,7 +160,7 @@ importers:
 
   services/api-gateway:
     dependencies:
-      '@nexus/types':
+      '@codeguard/types':
         specifier: workspace:*
         version: link:../../shared/types
       express:

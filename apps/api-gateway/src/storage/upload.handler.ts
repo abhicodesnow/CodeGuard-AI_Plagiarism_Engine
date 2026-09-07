@@ -7,7 +7,7 @@
  *       → file field stream (Readable)
  *         → PassThrough (byte counting)
  *           → MinIO putObject (streaming, S3 multipart internally)
- *             → object stored in nexus-submissions/submissions/{jobId}.zip
+ *             → object stored in codeguard-submissions/submissions/{jobId}.zip
  *
  * Why busboy? Apollo Server's expressMiddleware expects JSON bodies.
  * For multipart file uploads, we parse the raw request stream with busboy

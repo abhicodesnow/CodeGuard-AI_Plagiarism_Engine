@@ -1,4 +1,4 @@
-"""Nexus Hash Worker — Phase 2 + Phase 3 entry point.
+"""Codeguard Hash Worker — Phase 2 + Phase 3 entry point.
 
 Usage:
     python main.py --zip <bucket>/<object_key> --job-id <uuid>   # Phase 2 mode
@@ -55,7 +55,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S",
 )
-logger = logging.getLogger("nexus.hash-worker")
+logger = logging.getLogger("codeguard.hash-worker")
 
 
 def _build_minio_client() -> MinIOClient:
@@ -66,11 +66,11 @@ def _build_minio_client() -> MinIOClient:
     full_endpoint = endpoint if ":" in endpoint else f"{endpoint}:{port}"
 
     access_key = os.getenv(
-        "MINIO_ROOT_USER", os.getenv("MINIO_ACCESS_KEY", "nexus"),
+        "MINIO_ROOT_USER", os.getenv("MINIO_ACCESS_KEY", "codeguard"),
     )
     secret_key = os.getenv(
         "MINIO_ROOT_PASSWORD",
-        os.getenv("MINIO_SECRET_KEY", "nexus-secret-change-in-prod"),
+        os.getenv("MINIO_SECRET_KEY", "codeguard-secret-change-in-prod"),
     )
     secure = os.getenv("MINIO_USE_SSL", "false").lower() == "true"
 
@@ -405,9 +405,9 @@ def run_kafka_worker() -> int:
 
 
 def main() -> int:
-    """CLI entry point for the Nexus plagiarism-detection pipeline."""
+    """CLI entry point for the Codeguard plagiarism-detection pipeline."""
     parser = argparse.ArgumentParser(
-        description="Nexus Hash Worker — standalone pipeline runner",
+        description="Codeguard Hash Worker — standalone pipeline runner",
     )
 
     # Mode selection — mutually exclusive
@@ -492,7 +492,7 @@ def main() -> int:
         else:
             # Table output
             print(f"\n{'=' * 70}")
-            print(f"  Nexus Pipeline — Job {job_id}")
+            print(f"  Codeguard Pipeline — Job {job_id}")
             print(f"{'=' * 70}")
             if not pairs:
                 print("  No suspicious pairs found.")

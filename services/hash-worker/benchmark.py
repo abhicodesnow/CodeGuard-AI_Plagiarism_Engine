@@ -1,5 +1,5 @@
 """
-Nexus Phase 1 Benchmark — N = 500 synthetic C++ files.
+Codeguard Phase 1 Benchmark — N = 500 synthetic C++ files.
 
 Usage: python benchmark.py [--n 500] [--threshold 0.6] [--num-perm 128]
 
@@ -129,7 +129,7 @@ void run_{seed}() {{
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Nexus Phase 1 Benchmark")
+    parser = argparse.ArgumentParser(description="Codeguard Phase 1 Benchmark")
     parser.add_argument("--n", type=int, default=500, help="Number of files")
     parser.add_argument("--threshold", type=float, default=0.6,
                         help="Exact Jaccard threshold")
@@ -190,7 +190,7 @@ def main() -> None:
     avoided = total_possible_pairs - len(candidates)
 
     print(f"""
-    === Nexus Phase 1 Benchmark ===
+    === Codeguard Phase 1 Benchmark ===
     Files processed     : {batch.processed}
     Files skipped       : {len(batch.skipped)}
     Batch time          : {batch.elapsed_seconds:.3f}s

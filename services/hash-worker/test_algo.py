@@ -1,6 +1,6 @@
 # [perf] 100 files processed in 0.025s (0.2ms per file)
 # (re-run with: python test_algo.py)
-"""Comprehensive test suite for the Nexus plagiarism-detection algorithm.
+"""Comprehensive test suite for the Codeguard plagiarism-detection algorithm.
 
 Tests cover renamed variables, restructured loops, syntax errors,
 dissimilar files, identical files, and empty input.  All tests use

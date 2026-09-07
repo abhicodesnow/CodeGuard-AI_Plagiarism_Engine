@@ -202,7 +202,7 @@ async def test_handler_produces_report_to_minio(analyst):
     
     minio.put_json.assert_called_once()
     args = minio.put_json.call_args[0]
-    assert args[0] == "nexus-reports"
+    assert args[0] == "codeguard-reports"
     assert args[1] == "reports/j1/p1.json"
 
 @pytest.mark.asyncio

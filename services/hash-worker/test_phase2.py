@@ -245,8 +245,8 @@ class TestMinIOHealthCheck:
     def test_minio_health_check(self) -> None:
         client = MinIOClient(
             endpoint="localhost:9000",
-            access_key="nexus",
-            secret_key="nexus-secret-change-in-prod",
+            access_key="codeguard",
+            secret_key="codeguard-secret-change-in-prod",
             secure=False,
         )
         assert client.health_check() is True
@@ -520,7 +520,7 @@ class TestPipelineFailsGracefullyOnMissingZip:
         result = subprocess.run(
             [
                 sys.executable, "main.py",
-                "--zip", "nexus-submissions/does-not-exist.zip",
+                "--zip", "codeguard-submissions/does-not-exist.zip",
                 "--job-id", job_id,
             ],
             capture_output=True,
@@ -529,8 +529,8 @@ class TestPipelineFailsGracefullyOnMissingZip:
             env={
                 **dict(__import__("os").environ),
                 "MINIO_ENDPOINT": "localhost:9000",
-                "MINIO_ACCESS_KEY": "nexus",
-                "MINIO_SECRET_KEY": "nexus-secret-change-in-prod",
+                "MINIO_ACCESS_KEY": "codeguard",
+                "MINIO_SECRET_KEY": "codeguard-secret-change-in-prod",
                 "REDIS_HOST": "localhost",
                 "REDIS_PORT": "6379",
             },

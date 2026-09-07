@@ -1,4 +1,4 @@
-"""Redis-based job state management for Nexus pipeline.
+"""Redis-based job state management for Codeguard pipeline.
 
 Infrastructure-only module — never imports from pipeline.py or algorithm files.
 Provides status tracking, TTL-managed keys, and pub/sub event publishing.

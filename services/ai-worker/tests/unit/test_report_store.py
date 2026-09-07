@@ -31,7 +31,7 @@ class TestStoreReport:
     @patch("report_store.get_minio")
     @patch("report_store.get_redis")
     def test_stores_json_at_correct_minio_path(self, mock_redis_fn, mock_minio_fn):
-        """Report must land at reports/{jobId}/{pairId}.json in nexus-reports."""
+        """Report must land at reports/{jobId}/{pairId}.json in codeguard-reports."""
         mock_minio = MagicMock()
         mock_minio_fn.return_value = mock_minio
         mock_redis_fn.return_value = MagicMock()
@@ -42,7 +42,7 @@ class TestStoreReport:
         mock_minio.put_object.assert_called_once()
         kwargs = mock_minio.put_object.call_args.kwargs
         assert kwargs["object_name"] == "reports/job-001/pair-abc.json"
-        assert kwargs["bucket_name"] == "nexus-reports"
+        assert kwargs["bucket_name"] == "codeguard-reports"
         assert kwargs["content_type"] == "application/json"
 
     @patch("report_store.get_minio")

@@ -54,12 +54,12 @@ def main() -> None:
     args = parser.parse_args()
 
     endpoint = os.getenv("MINIO_ENDPOINT", "localhost:9000")
-    access_key = os.getenv("MINIO_ACCESS_KEY", "nexus")
-    secret_key = os.getenv("MINIO_SECRET_KEY", "nexus-secret-change-in-prod")
+    access_key = os.getenv("MINIO_ACCESS_KEY", "codeguard")
+    secret_key = os.getenv("MINIO_SECRET_KEY", "codeguard-secret-change-in-prod")
 
     client = Minio(endpoint, access_key=access_key, secret_key=secret_key, secure=False)
 
-    bucket = os.getenv("MINIO_BUCKET_SUBMISSIONS", "nexus-submissions")
+    bucket = os.getenv("MINIO_BUCKET_SUBMISSIONS", "codeguard-submissions")
     if not client.bucket_exists(bucket):
         client.make_bucket(bucket)
 

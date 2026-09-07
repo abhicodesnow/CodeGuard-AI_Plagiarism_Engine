@@ -1,5 +1,5 @@
 /**
- * GraphQL SDL schema for Nexus API Gateway.
+ * GraphQL SDL schema for Codeguard API Gateway.
  *
  * Types mirror shared/types/index.ts exactly.
  * Changes here MUST be reflected in the TypeScript event interfaces.

@@ -3,7 +3,7 @@ import logging
 from typing import Protocol, Any
 from forensic_analyst import ForensicAnalyst, PairInput
 
-logger = logging.getLogger("nexus.handler")
+logger = logging.getLogger("codeguard.handler")
 
 class MinIOClient(Protocol):
     def get_source(self, bucket: str, key: str) -> str: ...
@@ -40,7 +40,7 @@ async def handle_suspicious_pair(
     similarity = payload["similarity"]
 
     # 2 & 3. Fetch sources
-    bucket = "nexus-submissions"
+    bucket = "codeguard-submissions"
     
     def _fetch_source(filename: str) -> str:
         try:
@@ -81,7 +81,7 @@ async def handle_suspicious_pair(
     # 7. Store report in MinIO
     report_dict = dataclasses.asdict(report)
     report_key = f"reports/{job_id}/{pair_id}.json"
-    minio.put_json("nexus-reports", report_key, report_dict)
+    minio.put_json("codeguard-reports", report_key, report_dict)
 
     # 8. Publish to Redis
     state.publish_event(job_id, {

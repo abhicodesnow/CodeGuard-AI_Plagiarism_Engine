@@ -1,4 +1,4 @@
-"""Kafka consumer/producer infrastructure for the Nexus hash-worker.
+"""Kafka consumer/producer infrastructure for the Codeguard hash-worker.
 
 Infrastructure-only module — never imports from algorithm files (pipeline,
 ast_engine, winnowing, comparator, lsh_index).  Provides a robust consumer
@@ -26,7 +26,7 @@ from typing import Awaitable, Callable
 from kafka import KafkaConsumer, KafkaProducer  # type: ignore[import-untyped]
 from kafka.errors import KafkaError  # type: ignore[import-untyped]
 
-logger = logging.getLogger("nexus.kafka-client")
+logger = logging.getLogger("codeguard.kafka-client")
 
 
 @dataclass

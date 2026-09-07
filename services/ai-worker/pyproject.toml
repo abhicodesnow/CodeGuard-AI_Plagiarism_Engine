@@ -1,7 +1,7 @@
 [project]
-name = "nexus-ai-worker"
+name = "codeguard-ai-worker"
 version = "0.1.0"
-description = "Nexus AI worker: LLM-powered forensic analysis of suspicious code pairs"
+description = "Codeguard AI worker: LLM-powered forensic analysis of suspicious code pairs"
 requires-python = ">=3.11"
 
 dependencies = [

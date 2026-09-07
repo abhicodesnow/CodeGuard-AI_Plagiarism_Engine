@@ -1,4 +1,4 @@
-# Nexus Hash Worker
+# Codeguard Hash Worker
 
 C++ AST parsing, Winnowing fingerprinting, and pairwise Jaccard similarity comparison.
 

@@ -14,8 +14,8 @@ Design decisions:
 - MinIO write is the source of truth — S3Error propagates to caller for retry.
 - Redis writes are best-effort — RedisError is caught and logged (non-fatal).
   The API gateway falls back to polling MinIO directly if Redis is stale.
-- Source code lives in nexus-submissions at extracted/{jobId}/{filename}.
-  Reports live in nexus-reports at reports/{jobId}/{pairId}.json.
+- Source code lives in codeguard-submissions at extracted/{jobId}/{filename}.
+  Reports live in codeguard-reports at reports/{jobId}/{pairId}.json.
 """
 
 from __future__ import annotations
@@ -31,15 +31,15 @@ import redis as redis_lib
 from minio import Minio
 from minio.error import S3Error
 
-logger = logging.getLogger("nexus.report-store")
+logger = logging.getLogger("codeguard.report-store")
 
-# ── Singletons (lazy-initialized) ────────────────────────────────────────────
+# ── Singletons (lazy-initialized) ────────────────────────────────────────────────────────────────────
 _minio: Minio | None = None
 _redis: redis_lib.Redis | None = None
 
 # Bucket for forensic reports (separate from submissions bucket)
-BUCKET_REPORTS    = os.environ.get("MINIO_BUCKET_REPORTS", "nexus-reports")
-BUCKET_SUBMISSIONS = os.environ.get("MINIO_BUCKET_SUBMISSIONS", "nexus-submissions")
+BUCKET_REPORTS    = os.environ.get("MINIO_BUCKET_REPORTS", "codeguard-reports")
+BUCKET_SUBMISSIONS = os.environ.get("MINIO_BUCKET_SUBMISSIONS", "codeguard-submissions")
 
 # Redis TTL for report reference keys (7 days)
 REPORT_TTL = 86_400 * 7
@@ -54,9 +54,9 @@ def get_minio() -> Minio:
         full_ep  = endpoint if ":" in endpoint else f"{endpoint}:{port}"
         _minio = Minio(
             endpoint=full_ep,
-            access_key=os.environ.get("MINIO_ACCESS_KEY", "nexus"),
+            access_key=os.environ.get("MINIO_ACCESS_KEY", "codeguard"),
             secret_key=os.environ.get(
-                "MINIO_SECRET_KEY", "nexus-secret-change-in-prod"
+                "MINIO_SECRET_KEY", "codeguard-secret-change-in-prod"
             ),
             secure=os.environ.get("MINIO_USE_SSL", "false").lower() == "true",
         )
@@ -76,7 +76,7 @@ def get_redis() -> redis_lib.Redis:
 
 
 def ensure_report_bucket() -> None:
-    """Create the nexus-reports bucket if it doesn't exist (idempotent)."""
+    """Create the codeguard-reports bucket if it doesn't exist (idempotent)."""
     minio = get_minio()
     if not minio.bucket_exists(BUCKET_REPORTS):
         minio.make_bucket(BUCKET_REPORTS)
@@ -151,11 +151,11 @@ def fetch_source_from_minio(object_key: str, bucket: str | None = None) -> str:
     Fetch raw C++ source code from MinIO.
 
     The hash worker extracted source files to: extracted/{jobId}/{filename}
-    in the nexus-submissions bucket.
+    in the codeguard-submissions bucket.
 
     Args:
         object_key: MinIO object key (e.g. "extracted/job-001/alice.cpp").
-        bucket:     Optional bucket override. Defaults to nexus-submissions.
+        bucket:     Optional bucket override. Defaults to codeguard-submissions.
 
     Returns:
         Decoded source string (UTF-8 with latin-1 fallback).

@@ -11,7 +11,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/api-gateway/package.json ./apps/api-gateway/
 
 # Install dependencies
-RUN pnpm install --filter @nexus/api-gateway --frozen-lockfile || pnpm install --filter @nexus/api-gateway
+RUN pnpm install --filter @codeguard/api-gateway --frozen-lockfile || pnpm install --filter @codeguard/api-gateway
 
 # Copy source and build
 COPY apps/api-gateway/src ./apps/api-gateway/src
@@ -29,14 +29,14 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/api-gateway/package.json ./apps/api-gateway/
 
-RUN pnpm install --filter @nexus/api-gateway --prod --frozen-lockfile || pnpm install --filter @nexus/api-gateway --prod
+RUN pnpm install --filter @codeguard/api-gateway --prod --frozen-lockfile || pnpm install --filter @codeguard/api-gateway --prod
 
 COPY --from=builder /app/apps/api-gateway/dist ./apps/api-gateway/dist
 
 WORKDIR /app/apps/api-gateway
 
-RUN addgroup -S nexus && adduser -S nexus -G nexus
-USER nexus
+RUN addgroup -S codeguard && adduser -S codeguard -G codeguard
+USER codeguard
 
 EXPOSE 4000
 

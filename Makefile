@@ -12,12 +12,12 @@
         test-unit test-integration clean
 
 # Detect Docker network name dynamically
-NETWORK := $(shell docker network ls --format '{{.Name}}' 2>/dev/null | grep nexus-net | head -1)
+NETWORK := $(shell docker network ls --format '{{.Name}}' 2>/dev/null | grep codeguard-net | head -1)
 
 # ── Default target ─────────────────────────────────────────────────────────────
 help:
 	@echo ""
-	@echo "Nexus Development Commands"
+	@echo "Codeguard Development Commands"
 	@echo "======================================================"
 	@echo ""
 	@echo "Infrastructure:"
@@ -146,24 +146,24 @@ kafka-lag:
 # ── Redis helpers ─────────────────────────────────────────────────────────────
 
 redis-cli:
-	docker exec -it nexus-redis redis-cli
+	docker exec -it codeguard-redis redis-cli
 
 redis-flush:
 	@echo "WARNING: This deletes ALL Redis keys."
-	docker exec nexus-redis redis-cli FLUSHALL
+	docker exec codeguard-redis redis-cli FLUSHALL
 
 redis-job:
 ifndef J
 	$(error Usage: make redis-job J=<job-id>)
 endif
 	@echo "Job status for: $(J)"
-	docker exec nexus-redis redis-cli HGETALL "job:$(J):status"
+	docker exec codeguard-redis redis-cli HGETALL "job:$(J):status"
 
 # ── Worker helpers ─────────────────────────────────────────────────────────────
 
 worker-build:
-	docker build services/hash-worker -t nexus-hash-worker:dev
-	docker build services/ai-worker   -t nexus-ai-worker:dev
+	docker build services/hash-worker -t codeguard-hash-worker:dev
+	docker build services/ai-worker   -t codeguard-ai-worker:dev
 	@echo "✓ Worker images built."
 
 hash-shell:
@@ -172,10 +172,10 @@ hash-shell:
 	  -e KAFKA_BROKERS=kafka:9092 \
 	  -e REDIS_HOST=redis \
 	  -e MINIO_ENDPOINT=minio:9000 \
-	  -e MINIO_ACCESS_KEY=nexus \
-	  -e MINIO_SECRET_KEY=nexus-secret-change-in-prod \
+	  -e MINIO_ACCESS_KEY=codeguard \
+	  -e MINIO_SECRET_KEY=codeguard-secret-change-in-prod \
 	  -v "$(CURDIR)/services/hash-worker:/app:ro" \
-	  nexus-hash-worker:dev \
+	  codeguard-hash-worker:dev \
 	  bash
 
 # ── Testing ───────────────────────────────────────────────────────────────────

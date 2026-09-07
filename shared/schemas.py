@@ -1,4 +1,4 @@
-"""Nexus Kafka Event Schemas — Python equivalent of shared/types/index.ts.
+"""Codeguard Kafka Event Schemas — Python equivalent of shared/types/index.ts.
 
 These dataclasses mirror the TypeScript interfaces exactly. Both the Node.js
 API gateway and the Python workers must produce JSON matching these shapes.

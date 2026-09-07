@@ -2,19 +2,19 @@
 # infra/minio/init-buckets.sh
 #
 # Creates MinIO buckets and lifecycle policies.
-# Run context: inside nexus-minio-init container, after MinIO is healthy.
+# Run context: inside codeguard-minio-init container, after MinIO is healthy.
 #
 # Uses the `mc` (MinIO Client) CLI — already in the minio/mc Docker image.
 
 set -eu
 
 ENDPOINT="${MINIO_ENDPOINT:-http://minio:9000}"
-ACCESS_KEY="${MINIO_ACCESS_KEY:-nexus}"
-SECRET_KEY="${MINIO_SECRET_KEY:-nexus-secret-change-in-prod}"
-ALIAS="nexus-local"
+ACCESS_KEY="${MINIO_ACCESS_KEY:-codeguard}"
+SECRET_KEY="${MINIO_SECRET_KEY:-codeguard-secret-change-in-prod}"
+ALIAS="codeguard-local"
 
 echo "══════════════════════════════════════════════════════"
-echo "Nexus MinIO Bucket Initialization"
+echo "Codeguard MinIO Bucket Initialization"
 echo "Endpoint: ${ENDPOINT}"
 echo "══════════════════════════════════════════════════════"
 
@@ -38,11 +38,11 @@ create_bucket() {
   fi
 }
 
-# ── nexus-submissions ────────────────────────────────────────────────────────
+# ── codeguard-submissions ────────────────────────────────────────────────────────
 # Stores: raw ZIP files uploaded by instructors
 # Path pattern: submissions/{jobId}.zip
 # Lifecycle: expire after 30 days (ZIPs are large; results are what matter)
-create_bucket "nexus-submissions"
+create_bucket "codeguard-submissions"
 
 cat > /tmp/submissions-lifecycle.json << 'LIFECYCLE_EOF'
 {
@@ -61,10 +61,10 @@ cat > /tmp/submissions-lifecycle.json << 'LIFECYCLE_EOF'
 }
 LIFECYCLE_EOF
 
-mc ilm import "${ALIAS}/nexus-submissions" < /tmp/submissions-lifecycle.json
+mc ilm import "${ALIAS}/codeguard-submissions" < /tmp/submissions-lifecycle.json
 echo "  ✓ Lifecycle policy applied (30-day expiry on submissions/)"
 
-# ── nexus-reports ────────────────────────────────────────────────────────────
+# ── codeguard-reports ────────────────────────────────────────────────────────
 # Stores: LLM forensic JSON reports + extracted C++ source files
 # Path patterns:
 #   reports/{jobId}/{pairId}.json   ← LLM forensic report
@@ -73,7 +73,7 @@ echo "  ✓ Lifecycle policy applied (30-day expiry on submissions/)"
 # Lifecycle:
 #   reports/ → 90 days (audit record; instructors need these for grade disputes)
 #   extracted/ → 7 days (temp files; only needed during active analysis)
-create_bucket "nexus-reports"
+create_bucket "codeguard-reports"
 
 cat > /tmp/reports-lifecycle.json << 'LIFECYCLE_EOF'
 {
@@ -102,7 +102,7 @@ cat > /tmp/reports-lifecycle.json << 'LIFECYCLE_EOF'
 }
 LIFECYCLE_EOF
 
-mc ilm import "${ALIAS}/nexus-reports" < /tmp/reports-lifecycle.json
+mc ilm import "${ALIAS}/codeguard-reports" < /tmp/reports-lifecycle.json
 echo "  ✓ Lifecycle policy applied (7-day expiry on extracted/, 90-day on reports/)"
 
 # ── Verification ─────────────────────────────────────────────────────────────
@@ -112,16 +112,16 @@ echo "Buckets:"
 mc ls "${ALIAS}"
 
 echo ""
-echo "nexus-submissions lifecycle:"
-mc ilm ls "${ALIAS}/nexus-submissions"
+echo "codeguard-submissions lifecycle:"
+mc ilm ls "${ALIAS}/codeguard-submissions"
 
 echo ""
-echo "nexus-reports lifecycle:"
-mc ilm ls "${ALIAS}/nexus-reports"
+echo "codeguard-reports lifecycle:"
+mc ilm ls "${ALIAS}/codeguard-reports"
 
 echo ""
 echo "══════════════════════════════════════════════════════"
-echo "✓ All Nexus MinIO buckets initialized successfully"
+echo "✓ All Codeguard MinIO buckets initialized successfully"
 echo "   Console: http://localhost:9001"
 echo "   User: ${ACCESS_KEY}"
 echo "══════════════════════════════════════════════════════"

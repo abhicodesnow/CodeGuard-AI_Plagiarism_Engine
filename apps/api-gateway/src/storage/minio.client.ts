@@ -15,13 +15,13 @@ export function getMinioClient(): Minio.Client {
   _client = new Minio.Client({
     endPoint:  process.env.MINIO_ENDPOINT  ?? 'localhost',
     port:      parseInt(process.env.MINIO_PORT ?? '9000', 10),
-    accessKey: process.env.MINIO_ROOT_USER  ?? process.env.MINIO_ACCESS_KEY ?? 'nexus',
-    secretKey: process.env.MINIO_ROOT_PASSWORD ?? process.env.MINIO_SECRET_KEY ?? 'nexus-secret-change-in-prod',
+    accessKey: process.env.MINIO_ROOT_USER  ?? process.env.MINIO_ACCESS_KEY ?? 'codeguard',
+    secretKey: process.env.MINIO_ROOT_PASSWORD ?? process.env.MINIO_SECRET_KEY ?? 'codeguard-secret-change-in-prod',
     useSSL:    process.env.MINIO_USE_SSL === 'true',
   });
 
   return _client;
 }
 
-export const BUCKET_SUBMISSIONS = process.env.MINIO_BUCKET_SUBMISSIONS ?? 'nexus-submissions';
-export const BUCKET_REPORTS     = process.env.MINIO_BUCKET_REPORTS     ?? 'nexus-reports';
+export const BUCKET_SUBMISSIONS = process.env.MINIO_BUCKET_SUBMISSIONS ?? 'codeguard-submissions';
+export const BUCKET_REPORTS     = process.env.MINIO_BUCKET_REPORTS     ?? 'codeguard-reports';

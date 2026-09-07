@@ -1,5 +1,5 @@
 /**
- * Nexus API Gateway Bootstrap
+ * Codeguard API Gateway Bootstrap
  *
  * Architecture:
  * - Express handles HTTP (upload mutation via multipart, health check)
@@ -32,7 +32,7 @@ import { PassThrough } from 'stream';
 
 import { typeDefs } from './graphql/schema.js';
 import { resolvers } from './graphql/resolvers/index.js';
-import { buildContext, type NexusContext } from './graphql/context.js';
+import { buildContext, type CodeguardContext } from './graphql/context.js';
 import { getRedisClient } from './redis/client.js';
 import { getProducer, disconnectProducer } from './kafka/producer.js';
 import { startRedisSubscriber, stopRedisSubscriber } from './redis/subscriber.js';
@@ -91,7 +91,7 @@ async function bootstrap() {
   );
 
   // ── 5. Apollo Server ──────────────────────────────────────────────────────
-  const apolloServer = new ApolloServer<NexusContext>({
+  const apolloServer = new ApolloServer<CodeguardContext>({
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -243,7 +243,7 @@ async function bootstrap() {
               const ops = JSON.parse(operationsJson);
               // Attach the parsed GraphQL body and let Apollo handle it
               (req as any).body = ops;
-              (req as any).__nexusUpload = undefined;
+              (req as any).__codeguardUpload = undefined;
               (req.headers as any)['content-type'] = 'application/json';
               return next();
             } catch {
@@ -260,7 +260,7 @@ async function bootstrap() {
         }
 
         // Success: attach upload result to request, rewrite body for Apollo
-        (req as any).__nexusUpload = {
+        (req as any).__codeguardUpload = {
           objectKey: uploadResult.objectKey,
           sizeBytes: uploadResult.sizeBytes,
           jobId,
@@ -305,7 +305,7 @@ async function bootstrap() {
 
   // ── 7. Start listening ────────────────────────────────────────────────────
   await new Promise<void>((resolve) => httpServer.listen(PORT, resolve));
-  console.log(`[boot] Nexus API Gateway ready at http://localhost:${PORT}/graphql`);
+  console.log(`[boot] Codeguard API Gateway ready at http://localhost:${PORT}/graphql`);
   console.log(`[boot] WebSocket ready at ws://localhost:${PORT}/graphql`);
 
   // ── 8. Graceful shutdown ──────────────────────────────────────────────────

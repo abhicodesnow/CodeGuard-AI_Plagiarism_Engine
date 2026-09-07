@@ -28,7 +28,7 @@ from typing import Any
 
 import networkx as nx
 
-logger = logging.getLogger("nexus.deduplicator")
+logger = logging.getLogger("codeguard.deduplicator")
 
 
 @dataclass

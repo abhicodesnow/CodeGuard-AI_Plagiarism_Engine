@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # infra/kafka/init-topics.sh
 #
-# Creates all Nexus Kafka topics with production-grade configs.
+# Creates all Codeguard Kafka topics with production-grade configs.
 # Idempotent: safe to run multiple times (--if-not-exists).
 #
-# Run context: inside the nexus-kafka-init container, after Kafka is healthy.
+# Run context: inside the codeguard-kafka-init container, after Kafka is healthy.
 
 set -euo pipefail
 
@@ -12,7 +12,7 @@ BROKER="${KAFKA_BROKER:-kafka:9092}"
 REPLICATION=1   # Increase to 3 in a multi-broker production cluster
 
 echo "══════════════════════════════════════════════════════"
-echo "Nexus Kafka Topic Initialization"
+echo "Codeguard Kafka Topic Initialization"
 echo "Broker: ${BROKER}"
 echo "══════════════════════════════════════════════════════"
 
@@ -145,5 +145,5 @@ kafka-topics \
 
 echo ""
 echo "══════════════════════════════════════════════════════"
-echo "✓ All Nexus topics initialized successfully"
+echo "✓ All Codeguard topics initialized successfully"
 echo "══════════════════════════════════════════════════════"

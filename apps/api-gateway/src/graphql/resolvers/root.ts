@@ -1,5 +1,5 @@
 /**
- * Root resolvers for the Nexus API Gateway.
+ * Root resolvers for the Codeguard API Gateway.
  *
  * - Mutation.uploadSubmissions: ZIP → MinIO → Redis PENDING → Kafka JOB_CREATED → 202
  * - Query.jobStatus: Redis HGETALL
@@ -17,7 +17,7 @@ import { publishJobCreated, TOPICS } from '../../kafka/producer.js';
 import { initJobStatus, getJobStatusRecord, getJobPairs } from '../../redis/job-state.js';
 import { REDIS_KEYS } from '../../redis/client.js';
 import { getPubSub, JOB_STATUS_UPDATED } from '../../redis/pubsub.js';
-import type { NexusContext } from '../context.js';
+import type { CodeguardContext } from '../context.js';
 
 // ── Input validation ────────────────────────────────────────────────────────
 
@@ -35,7 +35,7 @@ export const resolvers = {
     uploadSubmissions: async (
       _parent: unknown,
       { input }: { input?: { similarityThreshold?: number; label?: string } },
-      context: NexusContext,
+      context: CodeguardContext,
     ) => {
       // ── 1. Validate input ───────────────────────────────────────────────
       const parsed = UploadInputSchema.safeParse(input ?? {});
@@ -59,7 +59,7 @@ export const resolvers = {
 
       // The upload handler is invoked from the multipart middleware.
       // Check if the file was already parsed and attached to the request.
-      const uploadResult = (req as any).__nexusUpload as
+      const uploadResult = (req as any).__codeguardUpload as
         | { objectKey: string; sizeBytes: number; jobId: string }
         | undefined;
 
@@ -89,7 +89,7 @@ export const resolvers = {
           schemaVersion:       1,
           eventType:           'JOB_CREATED',
           jobId,
-          bucketName:          'nexus-submissions',
+          bucketName:          'codeguard-submissions',
           objectKey:           uploadResult.objectKey,
           // submissionZipKey mirrors objectKey — required by hash-worker handler.py
           submissionZipKey:    uploadResult.objectKey,
@@ -137,7 +137,7 @@ export const resolvers = {
     jobStatus: async (
       _parent: unknown,
       { jobId }: { jobId: string },
-      _context: NexusContext,
+      _context: CodeguardContext,
     ) => {
       const record = await getJobStatusRecord(jobId);
       if (!record) return null;
@@ -154,7 +154,7 @@ export const resolvers = {
     suspiciousPairs: async (
       _parent: unknown,
       { jobId }: { jobId: string },
-      _context: NexusContext,
+      _context: CodeguardContext,
     ) => {
       const pairIds = await getJobPairs(jobId);
       return pairIds.map((pairId) => ({ pairId, jobId }));

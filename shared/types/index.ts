@@ -1,5 +1,5 @@
 /**
- * Nexus Kafka Event Schemas — v1
+ * Codeguard Kafka Event Schemas — v1
  *
  * IMPORTANT: All Kafka message payloads are serialized as JSON using these types.
  * Any field addition is backward-compatible. Field removal or rename is a BREAKING CHANGE

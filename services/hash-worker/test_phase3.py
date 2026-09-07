@@ -434,7 +434,7 @@ class TestFullKafkaFlow:
 
         job_id = f"test-kafka-e2e-{int(time.time())}"
         broker = "localhost:9093"
-        bucket = "nexus-submissions"
+        bucket = "codeguard-submissions"
 
         # 1. Create and upload test ZIP to MinIO
         cpp_files = {
@@ -448,8 +448,8 @@ class TestFullKafkaFlow:
         zip_bytes = buf.getvalue()
 
         minio_client = Minio(
-            "localhost:9000", access_key="nexus",
-            secret_key="nexus-secret-change-in-prod", secure=False,
+            "localhost:9000", access_key="codeguard",
+            secret_key="codeguard-secret-change-in-prod", secure=False,
         )
         if not minio_client.bucket_exists(bucket):
             minio_client.make_bucket(bucket)
@@ -489,8 +489,8 @@ class TestFullKafkaFlow:
         )
         worker_config = WorkerConfig(bucket=bucket, threshold=0.0)
         minio_cl = MinIOClient(
-            endpoint="localhost:9000", access_key="nexus",
-            secret_key="nexus-secret-change-in-prod", secure=False,
+            endpoint="localhost:9000", access_key="codeguard",
+            secret_key="codeguard-secret-change-in-prod", secure=False,
         )
         state_mgr = JobStateManager(redis_url="redis://localhost:6379")
         client = HashWorkerKafkaClient(kafka_config)
@@ -583,8 +583,8 @@ class TestDlqRoutingOnBadPayload:
         )
         worker_config = WorkerConfig()
         minio_cl = MinIOClient(
-            endpoint="localhost:9000", access_key="nexus",
-            secret_key="nexus-secret-change-in-prod", secure=False,
+            endpoint="localhost:9000", access_key="codeguard",
+            secret_key="codeguard-secret-change-in-prod", secure=False,
         )
         state_mgr = JobStateManager(redis_url="redis://localhost:6379")
         client = HashWorkerKafkaClient(kafka_config)

@@ -11,14 +11,14 @@ import { getRedisClient } from '../redis/client.js';
 import { getMinioClient } from '../storage/minio.client.js';
 import { getProducer } from '../kafka/producer.js';
 
-export interface NexusContext {
+export interface CodeguardContext {
   redis: Redis;
   minio: Minio.Client;
   kafkaProducer: Producer;
   req?: Request;
 }
 
-export async function buildContext(reqOrCtx: Request | unknown): Promise<NexusContext> {
+export async function buildContext(reqOrCtx: Request | unknown): Promise<CodeguardContext> {
   return {
     redis:         getRedisClient(),
     minio:         getMinioClient(),

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # infra/validate.sh
 #
-# Nexus Infrastructure Validation Script
+# Codeguard Infrastructure Validation Script
 # Run from repo root: bash infra/validate.sh
 #
 # Exit codes:
@@ -32,9 +32,9 @@ check() {
 }
 
 # Detect Docker network name (depends on project directory name)
-NETWORK=$(docker network ls --format '{{.Name}}' | grep nexus-net | head -1)
+NETWORK=$(docker network ls --format '{{.Name}}' | grep codeguard-net | head -1)
 if [ -z "$NETWORK" ]; then
-  echo "ERROR: No Docker network matching 'nexus-net' found."
+  echo "ERROR: No Docker network matching 'codeguard-net' found."
   echo "Run 'docker compose up -d' first."
   exit 1
 fi
@@ -43,7 +43,7 @@ echo "Using Docker network: $NETWORK"
 # ── Docker service health ──────────────────────────────────────────────────────
 header "Docker Service Health"
 
-for service in nexus-kafka nexus-zookeeper nexus-minio nexus-redis; do
+for service in codeguard-kafka codeguard-zookeeper codeguard-minio codeguard-redis; do
   STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$service" 2>/dev/null || echo "missing")
   if [ "$STATUS" = "healthy" ]; then
     green "$service is healthy"
@@ -100,47 +100,47 @@ check "EXTERNAL listener configured on port 9093" bash -c "
     | grep -q 'ApiVersion'
 "
 check "Kafka port 9093 is mapped to host" bash -c "
-  docker inspect nexus-kafka --format='{{range \$p, \$conf := .NetworkSettings.Ports}}{{\$p}} {{end}}' \
+  docker inspect codeguard-kafka --format='{{range \$p, \$conf := .NetworkSettings.Ports}}{{\$p}} {{end}}' \
     | grep -q '9093/tcp'
 "
 
 # ── MinIO ─────────────────────────────────────────────────────────────────────
 header "MinIO Buckets & Lifecycle"
 
-check "Bucket nexus-submissions exists" bash -c "
+check "Bucket codeguard-submissions exists" bash -c "
   docker run --rm --network $NETWORK --entrypoint sh minio/mc:latest \
-    -c 'mc alias set local http://minio:9000 nexus nexus-secret-change-in-prod >/dev/null 2>&1 && \
-        mc ls local/nexus-submissions >/dev/null 2>&1'
+    -c 'mc alias set local http://minio:9000 codeguard codeguard-secret-change-in-prod >/dev/null 2>&1 && \
+        mc ls local/codeguard-submissions >/dev/null 2>&1'
 "
-check "Bucket nexus-reports exists" bash -c "
+check "Bucket codeguard-reports exists" bash -c "
   docker run --rm --network $NETWORK --entrypoint sh minio/mc:latest \
-    -c 'mc alias set local http://minio:9000 nexus nexus-secret-change-in-prod >/dev/null 2>&1 && \
-        mc ls local/nexus-reports >/dev/null 2>&1'
+    -c 'mc alias set local http://minio:9000 codeguard codeguard-secret-change-in-prod >/dev/null 2>&1 && \
+        mc ls local/codeguard-reports >/dev/null 2>&1'
 "
-check "nexus-submissions lifecycle policy applied" bash -c "
+check "codeguard-submissions lifecycle policy applied" bash -c "
   docker run --rm --network $NETWORK --entrypoint sh minio/mc:latest \
-    -c 'mc alias set local http://minio:9000 nexus nexus-secret-change-in-prod >/dev/null 2>&1 && \
-        mc ilm ls local/nexus-submissions' | grep -q 'expire-raw-submissions'
+    -c 'mc alias set local http://minio:9000 codeguard codeguard-secret-change-in-prod >/dev/null 2>&1 && \
+        mc ilm ls local/codeguard-submissions' | grep -q 'expire-raw-submissions'
 "
 
 # ── Redis ─────────────────────────────────────────────────────────────────────
 header "Redis"
 
 check "Redis PING responds" bash -c "
-  docker exec nexus-redis redis-cli ping | grep -q PONG
+  docker exec codeguard-redis redis-cli ping | grep -q PONG
 "
 check "AOF persistence enabled" bash -c "
-  docker exec nexus-redis redis-cli CONFIG GET appendonly | grep -q yes
+  docker exec codeguard-redis redis-cli CONFIG GET appendonly | grep -q yes
 "
 check "maxmemory-policy is volatile-lru" bash -c "
-  docker exec nexus-redis redis-cli CONFIG GET maxmemory-policy | grep -q volatile-lru
+  docker exec codeguard-redis redis-cli CONFIG GET maxmemory-policy | grep -q volatile-lru
 "
 
 # Redis persistence validation: write key, verify it's readable
 check "Redis can write and read keys" bash -c "
-  docker exec nexus-redis redis-cli SET nexus:validate:test 'phase1-ok' EX 60 >/dev/null && \
-  docker exec nexus-redis redis-cli GET nexus:validate:test | grep -q 'phase1-ok' && \
-  docker exec nexus-redis redis-cli DEL nexus:validate:test >/dev/null
+  docker exec codeguard-redis redis-cli SET codeguard:validate:test 'phase1-ok' EX 60 >/dev/null && \
+  docker exec codeguard-redis redis-cli GET codeguard:validate:test | grep -q 'phase1-ok' && \
+  docker exec codeguard-redis redis-cli DEL codeguard:validate:test >/dev/null
 "
 
 # ── Host access ───────────────────────────────────────────────────────────────
@@ -150,28 +150,28 @@ check "MinIO S3 API reachable at localhost:9000" bash -c "
   curl -sf -o /dev/null http://localhost:9000/minio/health/live
 "
 check "Redis reachable at localhost:6379" bash -c "
-  docker exec nexus-redis redis-cli -h localhost ping | grep -q PONG
+  docker exec codeguard-redis redis-cli -h localhost ping | grep -q PONG
 "
 
 # ── Dev tooling (optional — only if running with --profile dev) ────────────────
-if docker inspect nexus-kafka-ui &>/dev/null; then
+if docker inspect codeguard-kafka-ui &>/dev/null; then
   header "Developer Tooling"
 
-  STATUS=$(docker inspect --format='{{.State.Status}}' nexus-kafka-ui 2>/dev/null || echo "missing")
+  STATUS=$(docker inspect --format='{{.State.Status}}' codeguard-kafka-ui 2>/dev/null || echo "missing")
   if [ "$STATUS" = "running" ]; then
-    green "Kafka UI (nexus-kafka-ui) is running"
+    green "Kafka UI (codeguard-kafka-ui) is running"
     ((PASS++))
   else
-    red "Kafka UI (nexus-kafka-ui) is $STATUS (expected: running)"
+    red "Kafka UI (codeguard-kafka-ui) is $STATUS (expected: running)"
     ((FAIL++))
   fi
 
-  STATUS=$(docker inspect --format='{{.State.Status}}' nexus-redis-ui 2>/dev/null || echo "missing")
+  STATUS=$(docker inspect --format='{{.State.Status}}' codeguard-redis-ui 2>/dev/null || echo "missing")
   if [ "$STATUS" = "running" ]; then
-    green "Redis UI (nexus-redis-ui) is running"
+    green "Redis UI (codeguard-redis-ui) is running"
     ((PASS++))
   else
-    red "Redis UI (nexus-redis-ui) is $STATUS (expected: running)"
+    red "Redis UI (codeguard-redis-ui) is $STATUS (expected: running)"
     ((FAIL++))
   fi
 fi

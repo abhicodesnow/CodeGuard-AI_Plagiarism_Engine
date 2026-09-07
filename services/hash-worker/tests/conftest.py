@@ -1,5 +1,5 @@
 """
-Pytest fixtures for Nexus hash-worker tests.
+Pytest fixtures for Codeguard hash-worker tests.
 
 Infrastructure fixtures (minio_client, redis_client) connect to the real
 services running in Docker. They are skipped automatically if the services
@@ -25,9 +25,9 @@ import pytest
 # ── Environment config (mirrors .env.example defaults) ───────────────────────
 
 MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "localhost:9000")
-MINIO_ACCESS = os.environ.get("MINIO_ACCESS_KEY", "nexus")
-MINIO_SECRET = os.environ.get("MINIO_SECRET_KEY", "nexus-secret-change-in-prod")
-MINIO_BUCKET = os.environ.get("MINIO_BUCKET_SUBMISSIONS", "nexus-submissions")
+MINIO_ACCESS = os.environ.get("MINIO_ACCESS_KEY", "codeguard")
+MINIO_SECRET = os.environ.get("MINIO_SECRET_KEY", "codeguard-secret-change-in-prod")
+MINIO_BUCKET = os.environ.get("MINIO_BUCKET_SUBMISSIONS", "codeguard-submissions")
 
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.environ.get("REDIS_PORT", "6379"))

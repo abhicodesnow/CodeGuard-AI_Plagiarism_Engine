@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import ReactFlow, { Node, Edge, Background, Controls } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { SuspiciousPair } from '@nexus/types';
+import { SuspiciousPair } from '@codeguard/types';
 
 interface ForensicGraphProps {
   jobId: string;
