@@ -15,7 +15,7 @@ export default function Home() {
 
     try {
       // Points to your API Gateway upload handler
-      const res = await fetch("http://localhost:4000/upload", {
+      const res = await fetch(process.env.NEXT_PUBLIC_UPLOAD_URL!, {
         method: "POST",
         body: formData,
       });
