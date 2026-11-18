@@ -1,10 +1,11 @@
-// @ts-ignore
-import "./globals.css";
 import type { Metadata } from "next";
+// @ts-expect-error CSS is handled by Next.js at build time.
+import "./globals.css";
+import ApolloWrapper from "../components/ApolloWrapper";
 
 export const metadata: Metadata = {
   title: "CodeGuard | Code Forensics",
-  description: "AI-Powered Plagiarism & Code Forensics Engine",
+  description: "Structural Plagiarism Engine",
 };
 
 export default function RootLayout({
@@ -14,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-black text-zinc-100 antialiased">
+        <ApolloWrapper>{children}</ApolloWrapper>
+      </body>
     </html>
   );
 }
